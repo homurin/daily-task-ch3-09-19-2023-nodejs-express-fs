@@ -33,7 +33,7 @@ app.use((req, res, next) => {
 //   next();
 // });
 
-//read file from json tours
+// read file from json tours
 
 const getAllTours = (req, res) => {
   res.status(200).json({
@@ -133,7 +133,8 @@ const removeTour = (req, res) => {
   );
 };
 
-//
+// read file from json users
+
 const users = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 );
@@ -147,7 +148,7 @@ const getAllUsers = (req, res) => {
 
 const getUserById = (req, res) => {
   const id = parseInt(req.params.id);
-  const user = users.find((el) => el.id === id);
+  const user = users.find((user) => user._id === id);
   if (!user) {
     return res.status(404).json({
       status: "failed",
@@ -164,7 +165,7 @@ const createUser = (req, res) => {
   // generate id for new data
   const newId = users[tours.length - 1].id + 1;
 
-  const newData = Object.assign({ id: newId }, req.body);
+  const newData = Object.assign({ _id: newId }, req.body);
 
   users.push(newData);
   fs.writeFile(
@@ -183,7 +184,7 @@ const createUser = (req, res) => {
 
 const editUser = (req, res) => {
   const id = parseInt(req.params.id);
-  const userIndex = tours.findIndex((el) => el.id === id);
+  const userIndex = tours.findIndex((user) => user._id === id);
 
   if (!userIndex === -1) {
     return res.status(404).json({
@@ -212,7 +213,7 @@ const editUser = (req, res) => {
 
 const removeUser = (req, res) => {
   const id = parseInt(req.params.id);
-  const userIndex = users.findIndex((el) => el.id === id);
+  const userIndex = users.findIndex((user) => user._id === id);
 
   if (!userIndex === -1) {
     return res.status(404).json({
