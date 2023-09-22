@@ -35,6 +35,10 @@ app.use((req, res, next) => {
 
 // read file from json tours
 
+const tours = JSON.parse(
+  fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
+);
+
 const getAllTours = (req, res) => {
   res.status(200).json({
     status: "sucess",
@@ -136,8 +140,9 @@ const removeTour = (req, res) => {
 // read file from json users
 
 const users = JSON.parse(
-  fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
+  fs.readFileSync(`${__dirname}/dev-data/data/users.json`)
 );
+
 const getAllUsers = (req, res) => {
   res.status(200).json({
     status: "sucess",
@@ -147,12 +152,12 @@ const getAllUsers = (req, res) => {
 };
 
 const getUserById = (req, res) => {
-  const id = parseInt(req.params.id);
+  const id = req.params.id;
   const user = users.find((user) => user._id === id);
   if (!user) {
     return res.status(404).json({
       status: "failed",
-      message: `Data with id ${id} not found`,
+      message: `User with id ${id} not found`,
     });
   }
   res.status(200).json({
@@ -163,13 +168,13 @@ const getUserById = (req, res) => {
 
 const createUser = (req, res) => {
   // generate id for new data
-  const newId = users[tours.length - 1].id + 1;
+  const newId = users.length;
 
-  const newData = Object.assign({ _id: newId }, req.body);
+  const newData = Object.assign({ _id: newId.toString() }, req.body);
 
   users.push(newData);
   fs.writeFile(
-    `${__dirname}/dev-data/data/tours-simple.json`,
+    `${__dirname}/dev-data/data/users.json`,
     JSON.stringify(users),
     (err) => {
       res.status(201).json({
@@ -183,7 +188,7 @@ const createUser = (req, res) => {
 };
 
 const editUser = (req, res) => {
-  const id = parseInt(req.params.id);
+  const id = req.params.id;
   const userIndex = tours.findIndex((user) => user._id === id);
 
   if (!userIndex === -1) {
@@ -197,12 +202,12 @@ const editUser = (req, res) => {
     ...req.body,
   };
   fs.writeFile(
-    `${__dirname}/dev-data/data/tours-simple.json`,
+    `${__dirname}/dev-data/data/users.json`,
     JSON.stringify(users),
     (err) => {
       res.status(201).json({
         status: "success",
-        message: `tour with id ${id} edited`,
+        message: `user with id ${id} edited`,
         data: {
           user: users[userIndex],
         },
@@ -212,24 +217,24 @@ const editUser = (req, res) => {
 };
 
 const removeUser = (req, res) => {
-  const id = parseInt(req.params.id);
+  const id = req.params.id;
   const userIndex = users.findIndex((user) => user._id === id);
 
   if (!userIndex === -1) {
     return res.status(404).json({
       status: "failed",
-      message: `Data with id ${id} not found`,
+      message: `user with id ${id} not found`,
     });
   }
 
-  users.splice(tourIndex, 1);
+  users.splice(userIndex, 1);
   fs.writeFile(
-    `${__dirname}/dev-data/data/tours-simple.json`,
+    `${__dirname}/dev-data/data/users.json`,
     JSON.stringify(users),
     (err) => {
       res.status(404).json({
         status: "Not found",
-        message: `tour with id ${id} edited`,
+        message: `user with id ${id} edited`,
         data: null,
       });
     }
